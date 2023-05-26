@@ -1,1 +1,5 @@
-global.ha.enabled=true
+global:
+  ha:
+    enabled: false
+  mtls:
+    enabled: false

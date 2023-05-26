@@ -3,7 +3,6 @@ kind: Namespace
 metadata:
   labels:
     kubernetes.io/metadata.name: dapr-system
-    istio-injection: enabled
   annotations:
     operator.1password.io/auto-restart: "true"
   name: dapr-system
