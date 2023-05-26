@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../bootstrap/03_argocd
+
+images:
+- name: quay.io/argoproj/argocd
+  newTag: v2.7.3
+- name: ghcr.io/dexidp/dex
+  newTag: v2.36.0
+- name: haproxy
+  newTag: 2.6.12-alpine
+- name: redis
+  newTag: 7.0.11-alpine

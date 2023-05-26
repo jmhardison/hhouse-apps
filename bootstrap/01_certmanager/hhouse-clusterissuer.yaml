@@ -1,0 +1,21 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+ name: lets-encrypt
+ namespace: cert-manager
+spec:
+ acme:
+   email: jonathan@hhouse.us
+   server: https://acme-v02.api.letsencrypt.org/directory
+   disableAccountKeyGeneration: true
+   privateKeySecretRef:
+     # Secret resource that will be used to store the account's private key.
+     name: hhouse-lets-encrypt-private-key
+   # Add a single challenge solver, HTTP01 using nginx
+   solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: hhouse-cloudflare-api-token-secret
+            key: api-token

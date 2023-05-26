@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # Argo CD's externally facing base URL (optional). Required when configuring SSO
+  url: https://argo.hhouse.us
+
+  # Enables application status badge feature
+  statusbadge.enabled: "true"
+
+  # Enables anonymous user access. The anonymous users get default role permissions specified argocd-rbac-cm.yaml.
+  users.anonymous.enabled: "false"
+  # Specifies token expiration duration
+  users.session.duration: "8h"
+
+  # A dex connector configuration (optional). See SSO configuration documentation:
+  # https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/user-management/index.md#sso
+  # https://dexidp.io/docs/connectors/
+  dex.config: |
+    connectors:
+      - type: github
+        id: github
+        name: GitHub
+        config:
+          clientID: $dex-githubapp:client_id
+          clientSecret: $dex-githubapp:client_secret
+          orgs:
+          - name: LMDev
+          loadAllGroups: true
+
+
+  # disables admin user. Admin is enabled by default
+  admin.enabled: "false"
+  
+  # Application pod logs RBAC enforcement enables control over who can and who can't view application pod logs.
+  # When you enable the switch, pod logs will be visible only to admin role by default. Other roles/users will not be able to view them via cli and UI.
+  # When you enable the switch, viewing pod logs for other roles/users will require explicit RBAC allow policies (allow get on logs subresource).
+  # When you disable the switch (either add it to the configmap with a "false" value or do not add it to the configmap), no actual RBAC enforcement will take place.
+  server.rbac.log.enforce.enable: "true"
+
+  kustomize.buildOptions: --load-restrictor LoadRestrictionsNone --enable-helm

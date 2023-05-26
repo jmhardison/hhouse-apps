@@ -1,0 +1,10 @@
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: argoproj-git-pat-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+    app.kubernetes.io/part-of: argocd
+spec:
+  itemPath: "vaults/k8s-prod/items/argoproj-git-pat-creds"

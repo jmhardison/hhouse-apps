@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: tfcloudagent
+
+resources:
+- namespace.yaml
+- app.yaml
+- op-secrets/tfcloudagentsecret.yaml
+

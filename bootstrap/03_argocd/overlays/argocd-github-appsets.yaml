@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-apps
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+  - git:
+      repoURL: https://github.com/jmhardison/hhouse-apps.git
+      revision: HEAD
+      directories:
+      - path: apps/*/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+      project: default
+      source:
+        repoURL: https://github.com/jmhardison/hhouse-apps.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path[0]}}'

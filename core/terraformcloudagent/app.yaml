@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tfc-agent
+  labels:
+    app: tfc-agent
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tfc-agent
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: tfc-agent
+        version: v1
+    spec:
+      containers:
+      - name: tfc-agent
+        image: hashicorp/tfc-agent:latest
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: Always #Always
+        envFrom:
+          - secretRef:
+              name: tfcloudagent-token

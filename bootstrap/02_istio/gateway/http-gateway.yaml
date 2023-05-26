@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: http-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - apps.hhouse.us
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+  - hosts:
+    - apps.hhouse.us
+    - hhouse.us
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: ingress-cert
+      mode: SIMPLE

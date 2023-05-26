@@ -1,0 +1,46 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: argoevents-http-gateway
+  namespace: argo-events
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - argoevents.hhouse.us
+    port:
+      name: http-argo
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - argoevents.hhouse.us
+    port:
+      name: https-argoevents-passthrough
+      number: 443
+      protocol: HTTPS
+    tls:
+      mode: PASSTHROUGH
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: argoevents-virtualservice
+  namespace: argo-events
+spec:
+  gateways:
+  - argoevents-http-gateway
+  hosts:
+  - argoevents.hhouse.us
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+          - argoevents.hhouse.us
+      route:
+        - destination:
+            host: events-server.argo-events.svc.cluster.local
+            port:
+              number: 443

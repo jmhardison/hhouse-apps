@@ -1,0 +1,12 @@
+#https://blog.cloudflare.com/automated-origin-ca-for-kubernetes/
+apiVersion: cert-manager.k8s.cloudflare.com/v1
+kind: OriginIssuer
+metadata:
+  name: cloudflareorigin-issuer
+  namespace: cert-manager
+spec:
+  requestType: OriginECC
+  auth:
+    serviceKeyRef:
+      name: hhouse-cloudflare-api-token-secret
+      key: origin-ca-key

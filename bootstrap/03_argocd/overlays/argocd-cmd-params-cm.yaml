@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  
+  ## Server properties
+  # Run server without TLS
+  server.insecure: "false"
+  # Repo server address. (default "argocd-repo-server:8081")
+  repo.server: "argocd-repo-server:8081"
+
+  # Dex server address (default "http://argocd-dex-server:5556")
+  dex.server: "http://argocd-dex-server:5556"
+
+  # Redis server hostname and port (e.g. argocd-redis:6379)
+  redis.server: "argocd-redis:6379"
+  reposerver.max.combined.directory.manifests.size: '3M'
