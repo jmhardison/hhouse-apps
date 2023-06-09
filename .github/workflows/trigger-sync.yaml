@@ -1,6 +1,7 @@
 
 name: Trigger-Sync
 on:
+  workflow_dispatch: #temp added for manual testing.
   push:
     branches:
       - main
