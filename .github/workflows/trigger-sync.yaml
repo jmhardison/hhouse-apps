@@ -52,5 +52,5 @@ jobs:
           ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
           ARGOCD_OPTS: "--grpc-web"
         run: |
-          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" app sync --project core
-          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" app sync --project default
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" app sync --project core --assumeYes --server-side
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" app sync --project default --assumeYes --server-side
