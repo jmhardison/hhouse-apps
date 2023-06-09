@@ -46,10 +46,11 @@ jobs:
           sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
           rm argocd-linux-amd64
 
-      - name: Curl to CFZT Webhook
+      - name: Sync All Apps Through CF ZeroTrust
         shell: bash
         env: 
           ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
-          #ARGOCD_AUTH_TOKEN: ${{ steps.op-load-secret.outputs.ARGOCD_AUTH_TOKEN }}
+          ARGOCD_OPTS: "--grpc-web"
         run: |
-          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: CF_SECRET" app list
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" app sync --project core
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" app sync --project default
