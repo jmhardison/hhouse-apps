@@ -1,0 +1,50 @@
+
+name: Trigger-Sync
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/**'
+      - 'bootstrap/**'
+      - 'core/**'
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  trigger-sync-curl:
+    name: Trigger Argo Sync
+    runs-on: ubuntu-latest
+
+    environment: prod
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Load secret
+        id: op-load-secret
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_SECRET }}
+          CF_ID: op://githubactions/cloudflare-zerotrust-github-hhouse-apps/CF-Access-Client-Id
+          CF_SECRET: op://githubactions/cloudflare-zerotrust-github-hhouse-apps/CF-Access-Client-Secret
+          ARGOCD_AUTH_TOKEN: op://githubactions/argocd-githubuser-token/password
+
+      - name: Install ArgoCD CLI 
+        run: |
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64       
+          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          rm argocd-linux-amd64
+
+      - name: Curl to CFZT Webhook
+        shell: bash
+        env: 
+          ARGOCD_SERVER: ${{ env.ARGOCD_SERVER }}
+          ARGOCD_AUTH_TOKEN: ${{ steps.op-load-secret.outputs.ARGOCD_AUTH_TOKEN }}
+        run: |
+          argocd -H "CF-Access-Client-Id:${{ steps.op-load-secret.outputs.CF_ID }}" "CF-Access-Client-Secret:${{ steps.op-load-secret.outputs.CF_SECRET }}" app list
