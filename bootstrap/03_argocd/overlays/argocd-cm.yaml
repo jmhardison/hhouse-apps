@@ -37,7 +37,7 @@ data:
   # disables admin user. Admin is enabled by default
   admin.enabled: "false"
 
-  account.githubactionuser: apiKey
+  accounts.githubactionuser: apiKey
   
   # Application pod logs RBAC enforcement enables control over who can and who can't view application pod logs.
   # When you enable the switch, pod logs will be visible only to admin role by default. Other roles/users will not be able to view them via cli and UI.
