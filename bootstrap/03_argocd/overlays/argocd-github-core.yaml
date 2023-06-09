@@ -15,10 +15,6 @@ spec:
     metadata:
       name: '{{path.basename}}'
     spec:
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
       project: core
       source:
         repoURL: https://github.com/jmhardison/hhouse-apps.git
