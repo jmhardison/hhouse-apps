@@ -33,6 +33,8 @@ jobs:
       - name: Load secret
         uses: 1password/load-secrets-action@v1
         id: op-load-secret
+        with:
+          export-env: true
         env:
           CF_ID: op://githubactions/cloudflare-zerotrust-github-hhouse-apps/CF-Access-Client-Id
           CF_SECRET: op://githubactions/cloudflare-zerotrust-github-hhouse-apps/CF-Access-Client-Secret
@@ -48,6 +50,6 @@ jobs:
         shell: bash
         env: 
           ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
-          ARGOCD_AUTH_TOKEN: ${{ steps.op-load-secret.outputs.ARGOCD_AUTH_TOKEN }}
+          #ARGOCD_AUTH_TOKEN: ${{ steps.op-load-secret.outputs.ARGOCD_AUTH_TOKEN }}
         run: |
-          argocd -H "CF-Access-Client-Id:${{ steps.op-load-secret.outputs.CF_ID }}" "CF-Access-Client-Secret:${{ steps.op-load-secret.outputs.CF_SECRET }}" app list
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: CF_SECRET" app list
