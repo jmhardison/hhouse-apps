@@ -102,7 +102,7 @@ jobs:
         env:
           ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
         run: |
-          curl -sSL -o /usr/local/bin/argocd https://${{ env.ARGOCD_SERVER }}/download/argocd-linux-amd64 -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}"
+          curl -sSL -o /usr/local/bin/argocd https://${{ env.ARGOCD_SERVER }}/download/argocd-linux-amd64 -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }} -H "Authorization: Bearer${{ env.ARGOCD_AUTH_TOKEN }}"
           chmod +x /usr/local/bin/argocd
           #curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64       
           #sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
