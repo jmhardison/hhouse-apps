@@ -6,10 +6,10 @@ resources:
 
 images:
 - name: quay.io/argoproj/argocd
-  newTag: v2.7.3
+  newTag: v2.7.6
 - name: ghcr.io/dexidp/dex
   newTag: v2.36.0
 - name: haproxy
-  newTag: 2.6.12-alpine
+  newTag: 2.6.14-alpine
 - name: redis
   newTag: 7.0.11-alpine
