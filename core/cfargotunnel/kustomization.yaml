@@ -8,7 +8,7 @@ resources:
   - base/namespace.yaml
   - op-secrets/hhouse-cloudflare-json.yaml
 
-#get latest versions from https://github.com/cloudflare/cloudflared/releases
+#get latest version from https://github.com/cloudflare/cloudflared/releases
 images:
 - name: cloudflare/cloudflared
   newTag: 2023.6.1
