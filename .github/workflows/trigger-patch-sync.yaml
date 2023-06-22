@@ -51,11 +51,11 @@ jobs:
             fi
           done
 
-          
+          #combine and get unique list of apps
           appsjsonString="$(jq -c -n '$ARGS.positional' --args -- "${apps[@]}" "${coreapps[@]}" | jq --compact-output --null-input '[ inputs[]] | unique')"
-          
+
           #if appjsonstring is empty, do not echo out and return 0.
-          if [[ $(echo $appjsonString | jq '. | length') -ne 0 ]]; then
+          if [ "$(echo $appsjsonString | jq 'length')" != "0" ]; then
               echo "apps=$appsjsonString" >> $GITHUB_OUTPUT  
           else
               echo "No Gathered Apps"
