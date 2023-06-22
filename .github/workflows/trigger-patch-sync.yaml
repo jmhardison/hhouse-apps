@@ -99,10 +99,15 @@ jobs:
       - name: Install ArgoCD CLI 
         if: ${{ !env.ACT }}
         id: install-argocdcli
+        env:
+          ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
         run: |
-          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64       
-          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
-          rm argocd-linux-amd64
+          curl -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64 -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}"
+          chmod +x /usr/local/bin/argocd
+          #curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64       
+          #sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          #rm argocd-linux-amd64
+          argocd version
 
       - name: Set App Target Revision
         shell: bash
