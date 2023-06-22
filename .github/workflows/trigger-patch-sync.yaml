@@ -113,7 +113,7 @@ jobs:
           echo "Setting app: ${{matrix.uniqueapps}} to target revision: ${{ github.sha }}"
 
           #patch app to target revision
-          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" --grpc-web app patch ${{matrix.uniqueapps}} --patch '{"spec": { "source": { "targetRevision": "${{ github.sha }}" } }}' --type merge
+          argocd -H "CF-Access-Client-Id: ${CF_ID}" -H "CF-Access-Client-Secret: ${CF_SECRET}" --grpc-web app patch ${{matrix.uniqueapps}} --patch '{"spec": { "source": { "targetRevision": "${{ github.sha }}" } }}' --type merge
           
       - name: Sync App
         shell: bash
@@ -124,6 +124,6 @@ jobs:
           echo "Performing Sync for ${{matrix.uniqueapps}}"
 
           #perform sync of app
-          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" --grpc-web app sync ${{matrix.uniqueapps}} --assumeYes --server-side
+          argocd -H "CF-Access-Client-Id: ${CF_ID}" -H "CF-Access-Client-Secret: ${CF_SECRET}" --grpc-web app sync ${{matrix.uniqueapps}} --assumeYes --server-side
           #   #argocd app diff --exit-code=false --grpc-web --revision $GITHUB_HEAD_REF --server-side-generate "$app" | tee -a diff.out
 
