@@ -124,6 +124,6 @@ jobs:
         run: |
           echo "Performing Sync for ${{matrix.uniqueapps}}"
           #perform sync of app
-          argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app sync ${{matrix.uniqueapps}} --assumeYes --server-side
+          argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app sync ${{matrix.uniqueapps}} --assumeYes --server-side --async
           #   #argocd app diff --exit-code=false --grpc-web --revision $GITHUB_HEAD_REF --server-side-generate "$app" | tee -a diff.out
 
