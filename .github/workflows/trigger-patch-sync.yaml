@@ -107,6 +107,8 @@ jobs:
       - name: Set App Target Revision
         shell: bash
         id: argo-set-revision
+        env:
+          ARGO_SERVER: ${{ vars.ARGO_SERVER }}
         run: |
           echo "Setting app: ${{matrix.uniqueapps}} to target revision: ${{ github.sha }}"
 
@@ -116,6 +118,8 @@ jobs:
       - name: Sync App
         shell: bash
         id: argo-sync-app
+        env:
+          ARGO_SERVER: ${{ vars.ARGO_SERVER }}
         run: |
           echo "Performing Sync for ${{matrix.uniqueapps}}"
 
