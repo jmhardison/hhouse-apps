@@ -26,6 +26,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         id: checkoutrepo
+        with:
+          fetch-depth: 0
 
       - name: Find Modified Apps
         id: find-apps
