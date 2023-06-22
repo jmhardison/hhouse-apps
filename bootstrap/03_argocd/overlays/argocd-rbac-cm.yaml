@@ -21,5 +21,7 @@ data:
     p, role:org-admin, logs, *, *, allow
     p, role:org-admin, exec, *, */*, allow
     p, githubactionuser, applications, sync, */*, allow
+    p, githubactionuser, applications, get, */*, allow
+    p, githubactionuser, applications, update, */*, allow
     g, LMDev:Ops, role:admin
 
