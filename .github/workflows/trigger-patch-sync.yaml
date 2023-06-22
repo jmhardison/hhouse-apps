@@ -126,4 +126,13 @@ jobs:
           #perform sync of app
           argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app sync ${{matrix.uniqueapps}} --assumeYes --server-side --async
           #   #argocd app diff --exit-code=false --grpc-web --revision $GITHUB_HEAD_REF --server-side-generate "$app" | tee -a diff.out
+      - name: Check App Is Healthy
+        shell: bash
+        id: argo-wait-app-health
+        if: ${{ !env.ACT }}
+        env:
+          ARGOCD_SERVER: ${{ vars.ARGOCD_SERVER }}
+        run: |
+          echo "Waiting for app ${{matrix.uniqueapps}} to go health."
+          argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app wait ${{matrix.uniqueapps}} --health --timeout 120
 
