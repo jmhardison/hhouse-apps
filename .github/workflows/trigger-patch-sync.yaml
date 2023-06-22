@@ -1,0 +1,123 @@
+
+name: Trigger-Patch-Sync
+on:
+  workflow_dispatch: #temp added for manual testing.
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/**'
+      - 'bootstrap/**'
+      - 'core/**'
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  gather-apps:
+    name: Gather Modified Apps
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.set-matrix-apps.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v3
+        id: checkoutrepo
+
+      - name: Find Modified Apps
+        id: find-apps
+        run: |
+          #obtain the modified folders, this will include a percentage representing the percent of change of the merge that the folder represented.
+          folders=$(git diff --dirstat=files,0 HEAD~1 HEAD)
+
+          #stage apps and coreapps
+          apps=()
+          coreapps=()
+          #parse and fill based on apps or core folder paths changes.
+          for f in $folders; do
+            if [[ $f =~ ^apps/.*$ ]]; then
+                #sed here looks for the 3rd in the path. apps/folder1/folder2, meaning folder2 (representing the app name) is used.
+                #combine folder paths if needed to form corrected env specific targets.
+                apps[${#apps[@]}]=$(echo "$f" | sed -n 's/^.*apps\/[^\/]*\/\([^\/]*\).*/\1/p')             
+            elif [[ $f =~ ^core/.*$ ]]; then
+                #sed here looks for the second in the path. core/folder1/folder2, meaning folder1 (representing the app name) is used.
+                #combine folder paths if needed to form corrected env specific targets.
+                coreapps[${#coreapps[@]}]=$(echo "$f" | sed -n 's/^.*core\/\([^\/]*\).*/\1/p')
+            fi
+          done
+
+          
+          appsjsonString="$(jq -c -n '$ARGS.positional' --args -- "${apps[@]}" "${coreapps[@]}" | jq --compact-output --null-input '[ inputs[]] | unique')"
+          
+          #if appjsonstring is empty, do not echo out and return 0.
+          if [[ $(echo $appjsonString | jq '. | length') -ne 0 ]]; then
+              echo "apps=$appsjsonString" >> $GITHUB_OUTPUT  
+          else
+              echo "No Gathered Apps"
+              exit 1
+          fi   
+
+      - name: Setup Matrix Output For Apps
+        shell: bash
+        id: set-matrix-apps
+        if: steps.find-apps.outcome == 'success'
+        run: |
+          echo "matrix={\"uniqueapps\":${{toJSON(steps.find-apps.outputs.apps)}}}" >> $GITHUB_OUTPUT
+
+  matrix-sync-apps:
+    name: "Sync App - ${{matrix.uniqueapps}} - ${{ github.sha }}"
+    environment: prod
+    runs-on: ubuntu-latest
+    needs: gather-apps
+    strategy:
+      matrix: ${{fromJSON(needs.gather-apps.outputs.matrix)}}
+    
+    steps:
+      - name: Configure 1Password Service Account
+        uses: 1password/load-secrets-action/configure@v1
+        if: ${{ !env.ACT }}
+        id: op-configure
+        with:
+          service-account-token: ${{ secrets.OP_SERVICE_SECRET }}
+
+      - name: Load 1Password Secrets
+        uses: 1password/load-secrets-action@v1
+        if: ${{ !env.ACT }}
+        id: op-load-secrets
+        with:
+          export-env: true
+        env:
+          CF_ID: op://githubactions/cloudflare-zerotrust-github-hhouse-apps/CF-Access-Client-Id
+          CF_SECRET: op://githubactions/cloudflare-zerotrust-github-hhouse-apps/CF-Access-Client-Secret
+          ARGOCD_AUTH_TOKEN: op://githubactions/argocd-githubuser-token/password
+
+      - name: Install ArgoCD CLI 
+        if: ${{ !env.ACT }}
+        id: install-argocdcli
+        run: |
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64       
+          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          rm argocd-linux-amd64
+
+      - name: Set App Target Revision
+        shell: bash
+        id: argo-set-revision
+        run: |
+          echo "Setting app: ${{matrix.uniqueapps}} to target revision: ${{ github.sha }}"
+
+          #patch app to target revision
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" --grpc-web app patch ${{matrix.uniqueapps}} --patch '[{"op": "replace", "path": "/spec/source/targetRevision", "value": "${{ github.sha }}"}]'
+          
+      - name: Sync App
+        shell: bash
+        id: argo-sync-app
+        run: |
+          echo "Performing Sync for ${{matrix.uniqueapps}}"
+
+          #perform sync of app
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" --grpc-web app sync ${{matrix.uniqueapps}} --assumeYes --server-side
+          #   #argocd app diff --exit-code=false --grpc-web --revision $GITHUB_HEAD_REF --server-side-generate "$app" | tee -a diff.out
+
