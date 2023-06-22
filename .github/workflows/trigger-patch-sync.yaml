@@ -76,6 +76,7 @@ jobs:
     needs: gather-apps
     strategy:
       matrix: ${{fromJSON(needs.gather-apps.outputs.matrix)}}
+      #max-parallel: 5
     
     steps:
       - name: Configure 1Password Service Account
@@ -112,8 +113,8 @@ jobs:
         run: |
           echo "Setting app: ${{matrix.uniqueapps}} to target revision: ${{ github.sha }}"
           #patch app to target revision
-          argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app set ${{matrix.uniqueapps}} --revision "${{ github.sha }}"
-          
+          #argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app set ${{matrix.uniqueapps}} --revision "${{ github.sha }}"
+          argocd -H "CF-Access-Client-Id:${{ env.CF_ID }}" -H "CF-Access-Client-Secret:${{ env.CF_SECRET }}" --grpc-web app patch ${{matrix.uniqueapps}} --patch '[{"op": "replace", "path": "/spec/source/targetRevision", "value": "${{ github.sha }}"}]'
       - name: Sync App
         shell: bash
         id: argo-sync-app
