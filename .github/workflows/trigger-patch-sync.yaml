@@ -113,7 +113,7 @@ jobs:
           echo "Setting app: ${{matrix.uniqueapps}} to target revision: ${{ github.sha }}"
 
           #patch app to target revision
-          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" --grpc-web app patch ${{matrix.uniqueapps}} --patch '[{"op": "replace", "path": "/spec/source/targetRevision", "value": "${{ github.sha }}"}]'
+          argocd -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" --grpc-web app patch ${{matrix.uniqueapps}} --patch '{"spec": { "source": { "targetRevision": "${{ github.sha }}" } }}' --type merge
           
       - name: Sync App
         shell: bash
