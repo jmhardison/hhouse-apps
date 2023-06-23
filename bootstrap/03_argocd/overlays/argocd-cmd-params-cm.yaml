@@ -18,5 +18,5 @@ data:
   dex.server: "http://argocd-dex-server:5556"
 
   # Redis server hostname and port (e.g. argocd-redis:6379)
-  redis.server: "argocd-redis:6379"
+  redis.server: "argocd-redis-ha-haproxy:6379"
   reposerver.max.combined.directory.manifests.size: '3M'
