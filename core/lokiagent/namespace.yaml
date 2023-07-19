@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: lokiagent
+    istio-injection: enabled
+  annotations:
+    operator.1password.io/auto-restart: "true"
+  name: lokiagent
