@@ -5,4 +5,4 @@ namespace: lokiagent
 resources:
 - namespace.yaml
 - deploy.yaml
-
+- op-secret.yaml
