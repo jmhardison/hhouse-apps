@@ -263,17 +263,10 @@ spec:
       - args:
         - -client.url=https://$(LOKI_USER):$(LOKI_PASS)@logs-prod3.grafana.net/api/prom/push
         - -config.file=/etc/promtail/promtail.yml
+        envFrom:
+          - secretRef:
+              name: loki-secret
         env:
-        - name: LOKI_USER
-          valueFrom:
-            secretKeyRef:
-              name: loki-secret
-              key: username
-        - name: LOKI_PASS
-          valueFrom:
-            secretKeyRef:
-              name: loki-secret
-              key: password
         - name: HOSTNAME
           valueFrom:
             fieldRef:
