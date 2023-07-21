@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: homedashboards
 
 resources:
+- namespace.yaml
 - deploy.yaml
 
 configMapGenerator:
