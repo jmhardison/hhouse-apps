@@ -13,7 +13,7 @@
         "params": {
           "url": "https://api.open-meteo.com/v1/forecast?latitude=37.043&longitude=-93.294&current_weather=true&hourly=temperature_2m",
           "format": "JSON",
-          "key": ".current_weather.temperature"
+          "key": "(.current_weather.temperature * 9/5) + 32"
         }
       }
     ]
