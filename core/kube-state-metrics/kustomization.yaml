@@ -8,6 +8,7 @@ resources:
 - deployment.yaml
 - service-account.yaml
 - service.yaml
+- namespace.yaml
 
 
 #get latest versions from https://github.com/kubernetes/kube-state-metrics/releases
