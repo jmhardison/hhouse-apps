@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitoror
+  labels:
+    app: monitoror
+    service: monitoror
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: monitoror
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoror
+  labels:
+    app: monitoror
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitoror
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: monitoror
+        version: v1
+    spec:
+      containers:
+      - name: monitoror
+        image: monitoror/monitoror
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/monitoror/config.json
+          subPath: config.json
+        volumes:
+        - name: config-volume
+          configMap:
+            name: monitororconfig
