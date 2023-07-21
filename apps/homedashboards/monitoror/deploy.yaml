@@ -34,6 +34,9 @@ spec:
       containers:
       - name: monitoror
         image: monitoror/monitoror
+        env:
+          - name: MO_CONFIG
+            value: /etc/monitoror/config.json
         resources:
           requests:
             cpu: "100m"
