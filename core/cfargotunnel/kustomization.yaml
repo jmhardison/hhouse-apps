@@ -11,7 +11,7 @@ resources:
 #get latest versions from https://github.com/cloudflare/cloudflared/releases
 images:
 - name: cloudflare/cloudflared
-  newTag: 2023.6.1
+  newTag: 2023.7.1
 
 replicas:
 - name: cloudflared
