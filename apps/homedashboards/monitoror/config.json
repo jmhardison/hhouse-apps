@@ -11,9 +11,9 @@
         "type": "HTTP-FORMATTED",
         "label": "Nixa Weather",
         "params": {
-          "url": "https://api.open-meteo.com/v1/forecast?latitude=37.043&longitude=-93.294&current_weather=true&hourly=temperature_2m",
+          "url": "https://api.open-meteo.com/v1/forecast?latitude=37.043&longitude=-93.294&current_weather=true&hourly=temperature_2m&temperature_unit=fahrenheit",
           "format": "JSON",
-          "key": "(.current_weather.temperature * 9/5) + 32"
+          "key": ".current_weather.temperature"
         }
       }
     ]
