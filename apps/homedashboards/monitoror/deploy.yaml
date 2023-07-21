@@ -44,7 +44,7 @@ spec:
         - name: config-volume
           mountPath: /etc/monitoror/config.json
           subPath: config.json
-        volumes:
-        - name: config-volume
-          configMap:
-            name: monitororconfig
+      volumes:
+      - name: config-volume
+        configMap:
+          name: monitororconfig
