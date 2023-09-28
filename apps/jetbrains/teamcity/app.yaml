@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity
+  namespace: jetbrains
+  labels:
+    app: teamcity
+    service: teamcity
+spec:
+  ports:
+  - port: 8111
+    name: http
+  selector:
+    app: teamcity
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamcity
+  labels:
+    app: teamcity
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamcity
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: teamcity
+        version: v1
+    spec:
+      containers:
+      - name: teamcity
+        image: docker.io/jetbrains/teamcity-server
+        resources:
+          requests:
+            cpu: "300m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 8111
+        volumeMounts:
+        - name: tc-datadir-volume
+          mountPath: /data/teamcity_server/datadir
+        - name: tc-logdir-volume
+          mountPath: /opt/teamcity/logs
+      volumes:
+      - name: tc-datadir-volume
+        persistentVolumeClaim:
+          claimName: teamcity-longhorn-volv-pvc
+      - name: tc-logdir-volume
+        persistentVolumeClaim:
+          claimName: teamcity-longhorn-volv-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teamcity-longhorn-volv-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
