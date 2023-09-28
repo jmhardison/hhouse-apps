@@ -32,6 +32,10 @@ spec:
         app: teamcity
         version: v1
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
       - name: teamcity
         image: docker.io/jetbrains/teamcity-server
