@@ -49,15 +49,27 @@ spec:
       volumes:
       - name: tc-datadir-volume
         persistentVolumeClaim:
-          claimName: teamcity-longhorn-volv-pvc
+          claimName: teamcity-longhorn-vol-data-pvc
       - name: tc-logdir-volume
         persistentVolumeClaim:
-          claimName: teamcity-longhorn-volv-pvc
+          claimName: teamcity-longhorn-vol-logs-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: teamcity-longhorn-volv-pvc
+  name: teamcity-longhorn-vol-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teamcity-longhorn-vol-logs-pvc
 spec:
   accessModes:
     - ReadWriteOnce
