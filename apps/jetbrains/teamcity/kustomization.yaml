@@ -5,5 +5,4 @@ namespace: jetbrains
 resources:
 - namespace.yaml
 - app.yaml
-- app-ingressgw.yaml
 
