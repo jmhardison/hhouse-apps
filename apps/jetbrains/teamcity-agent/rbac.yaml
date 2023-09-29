@@ -23,4 +23,4 @@ roleRef:
   name: teamcity:manage-agents
 subjects:
   - kind: ServiceAccount
-    name: teamcity
+    name: default
