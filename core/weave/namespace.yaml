@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    operator.1password.io/auto-restart: "true"
+  name: weave
