@@ -1,5 +1,0 @@
-global:
-  ha:
-    enabled: false
-  mtls:
-    enabled: false
