@@ -3,6 +3,6 @@ kind: Kustomization
 namespace: metallb-system
 
 resources:
-  - github.com/metallb/metallb/config/native?ref=v0.13.9 # https://github.com/metallb/metallb/releases
+  - github.com/metallb/metallb/config/native?ref=v0.14.18 # https://github.com/metallb/metallb/releases
   - addresspool.yaml
   #- metallb-ingress-service.yaml #example service using metallb
