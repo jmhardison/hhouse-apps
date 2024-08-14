@@ -6,5 +6,4 @@ resources:
 - namespace.yaml
 - test-secret.yaml
 - hello-world.yaml
-- helloworld-gateway.yaml
 
