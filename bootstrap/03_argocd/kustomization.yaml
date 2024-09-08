@@ -3,10 +3,10 @@ kind: Kustomization
 
 namespace: argocd
 bases:
-  - base/
+  - base/non-ha #non-ha for temp microk8s small cluster
 
 resources:
-- overlays/ingress.yaml
+#- overlays/ingress.yaml #ingress is now CFTunnel->Service
 - op-secrets/dex-githubapp.yaml
 - op-secrets/github-repocreds.yaml
 - certificates/ingress-certificate.yaml
