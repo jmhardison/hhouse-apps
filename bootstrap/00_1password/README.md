@@ -3,11 +3,14 @@
 Installing the 1Password controller requires the secrets to be created first.
 These can be layered together with kustomize, however that will prevent argo from being able to deploy them.
 
+
 ## Secrets (bootstrapped items)
 
-The two secrets are injected outside of the deploy processes, after the deployment is done or namespace is created, inject and create the following secrets.
+The two secrets are injected outside of the deploy processes, after the deployment is done or namespace is created, inject and create the following secrets. In addition to the secrets, the namespace will be created.
 
 ```
+kubectl create namespace 1password
+
 op inject -i op-session.tpl -o op-session
 kubectl -n 1password create secret generic op-credentials --from-file=1password-credentials.json=op-session
 
@@ -16,13 +19,10 @@ kubectl -n 1password create secret generic onepassword-token --from-literal=toke
 
 
 
-## HELM based install of 1password -> extract to kube bases
+## Apply Kustomize
 
-The following is used to update the base manifests if needed.
+The following is used to apply the bootstrapping for 1password connect.
 
 ```
-helm repo add 1password https://1password.github.io/connect-helm-charts
-helm fetch --untar --untardir charts 1password/connect
-helm template --output-dir base --namespace 1password --values customvalues.yaml connect charts/connect
-rm -rf charts
+kubectl kustomize --enable-helm | kubectl apply -f -
 ```

@@ -353,3 +353,4 @@ MigrationBackup/
 #secret manifest ignores post op rendering
 bootstrap/00_1password/op-session
 bootstrap/00_1password/op-token
+**/charts
