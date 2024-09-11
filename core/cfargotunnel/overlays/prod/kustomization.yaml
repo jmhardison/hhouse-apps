@@ -3,9 +3,8 @@ kind: Kustomization
 namespace: cfargotunnel
 
 resources:
-  - base/deployment.yaml
-  - base/cf-configmap.yaml
-  - base/namespace.yaml
+  - ../../base/deployment.yaml
+  - cf-configmap.yaml
   - op-secrets/hhouse-cloudflare-json.yaml
 
 #get latest versions from https://github.com/cloudflare/cloudflared/releases

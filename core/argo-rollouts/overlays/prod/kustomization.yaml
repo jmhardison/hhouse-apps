@@ -5,5 +5,4 @@ namespace: argo-rollouts
 
 resources:
 - namespace.yaml
-- install.yaml
-- wf-install.yaml
+- ../../base/install.yaml

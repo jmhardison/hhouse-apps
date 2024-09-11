@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+bases:
+  - ../../base/non-ha #non-ha for temp microk8s small cluster
+
+resources:
+#- overlays/ingress.yaml #ingress is now CFTunnel->Service
+- op-secrets/dex-githubapp.yaml
+- op-secrets/github-repocreds.yaml
+- certificates/ingress-certificate.yaml
+- certificates/cloudflare-ca-originissuer.yaml
+- op-secrets/hhouse-cloudflare-api-token-secret_secrets.yaml
+- op-secrets/argo-secrets.yaml
+- appsets/
+- projects/
+
+
+patchesStrategicMerge:
+  - argocd-cm.yaml
+  - argocd-cmd-params-cm.yaml
+  - argocd-ssh-known-hosts-cm.yaml
+  - argocd-rbac-cm.yaml

@@ -2,9 +2,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - 0-namespace.yaml
-  - https://raw.githubusercontent.com/cloudflare/origin-ca-issuer/v0.9.0/deploy/crds/cert-manager.k8s.cloudflare.com_originissuers.yaml
-  - deployment.yaml
-  - role-approver.yaml
-  - role.yaml
-  - serviceaccount.yaml
+#- overlays/ingress.yaml #ingress is now CFTunnel->Service
+- ../../core/origin-ca-issuer/overlays/prod

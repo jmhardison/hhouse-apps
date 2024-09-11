@@ -24,5 +24,5 @@ kubectl -n 1password create secret generic onepassword-token --from-literal=toke
 The following is used to apply the bootstrapping for 1password connect.
 
 ```
-kubectl kustomize --enable-helm | kubectl apply -f -
+kubectl kustomize --enable-helm --load-restrictor='LoadRestrictionNone' | kubectl apply -f -
 ```
