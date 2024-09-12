@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - 0-namespace.yaml
-  - https://raw.githubusercontent.com/cloudflare/origin-ca-issuer/v0.9.0/deploy/crds/cert-manager.k8s.cloudflare.com_originissuers.yaml
+  - crd.yaml
   - deployment.yaml
   - role-approver.yaml
   - role.yaml
