@@ -14,4 +14,4 @@ images:
 
 replicas:
 - name: cloudflared
-  count: 2
+  count: 1
