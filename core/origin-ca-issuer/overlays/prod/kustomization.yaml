@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - 0-namespace.yaml
   - crd.yaml
+  - crd-clusteroriginissuer.yaml
   - deployment.yaml
   - role-approver.yaml
   - role.yaml
