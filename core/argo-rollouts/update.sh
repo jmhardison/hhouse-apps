@@ -1,4 +1,5 @@
 #!/bin/sh
+
 curl -s https://raw.githubusercontent.com/argoproj/argo-rollouts/master/manifests/install.yaml -o /tmp/argorolloutsinstall.yaml #quay.io/argoproj/argo-rollouts is latest?
 INSTALLFILE="/tmp/argorolloutsinstall.yaml"
 MATCHSTRING="quay.io\/argoproj\/argo-rollouts"
