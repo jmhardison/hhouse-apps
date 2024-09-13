@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: argo-rollouts
 
 resources:
-- ../../base/non-ha/latest/install.yaml
+- ../../base/non-ha/latest
