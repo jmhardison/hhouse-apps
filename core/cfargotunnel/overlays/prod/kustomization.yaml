@@ -10,7 +10,7 @@ resources:
 #get latest versions from https://github.com/cloudflare/cloudflared/releases
 images:
 - name: cloudflare/cloudflared
-  newTag: 2024.8.2
+  newTag: 2024.9.1
 
 replicas:
 - name: cloudflared
