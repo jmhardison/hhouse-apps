@@ -1,0 +1,231 @@
+# Source: kargo/templates/api/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kargo-api
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: api
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kargo
+      app.kubernetes.io/instance: kargo
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: kargo-0.8.7
+        app.kubernetes.io/name: kargo
+        app.kubernetes.io/instance: kargo
+        app.kubernetes.io/version: "v0.8.7"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: api
+      annotations:
+        configmap/checksum: 83927ca9169b52a0082e1ab291251b5f0ecc378510e6e688e3b6d42e11720c96
+        secret/checksum: 5008bd87b25e37e99e4c790f2bcd9b47d604a994f59a93f7df5c937e159025df
+    spec:
+      serviceAccount: kargo-api
+      containers:
+        - name: api
+          image: ghcr.io/akuity/kargo:v0.8.7
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/kargo", "api"]
+          envFrom:
+          - configMapRef:
+              name: kargo-api
+          - secretRef:
+              name: kargo-api
+          ports:
+            - name: h2c
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /usr/local/bin/grpc_health_probe
+                - -addr=:8080
+                - -tls
+                - -tls-no-verify
+            initialDelaySeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /usr/local/bin/grpc_health_probe
+                - -addr=:8080
+                - -tls
+                - -tls-no-verify
+            initialDelaySeconds: 5
+          volumeMounts:
+            - mountPath: /etc/kargo
+              name: config
+              readOnly: true
+          resources:
+            {}
+      volumes:
+        - name: config
+          projected:
+            sources:
+              - secret:
+                  name: kargo-api-cert
+                  items:
+                    - key: tls.crt
+                      path: tls.crt
+                    - key: tls.key
+                      path: tls.key
+---
+# Source: kargo/templates/controller/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kargo-controller
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kargo
+      app.kubernetes.io/instance: kargo
+      app.kubernetes.io/component: controller
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: kargo-0.8.7
+        app.kubernetes.io/name: kargo
+        app.kubernetes.io/instance: kargo
+        app.kubernetes.io/version: "v0.8.7"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: controller
+      annotations:
+        configmap/checksum: e857bb6246cfe4486f88d0c10149479146ac326e6d441a0b55c3c29c03b8f3b4
+    spec:
+      serviceAccount: kargo-controller
+      containers:
+      - name: controller
+        image: ghcr.io/akuity/kargo:v0.8.7
+        imagePullPolicy: IfNotPresent
+        command: ["/usr/local/bin/kargo", "controller"]
+        envFrom:
+        - configMapRef:
+            name: kargo-controller
+        resources:
+          {}
+---
+# Source: kargo/templates/management-controller/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kargo-management-controller
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: management-controller
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kargo
+      app.kubernetes.io/instance: kargo
+      app.kubernetes.io/component: management-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kargo
+        app.kubernetes.io/instance: kargo
+        app.kubernetes.io/component: management-controller
+      annotations:
+        configmap/checksum: 09e2c02a7e3a377e96d59d1fd0a1e95757a1ad39024466f12c612d082962bc75
+    spec:
+      serviceAccount: kargo-management-controller
+      containers:
+      - name: management-controller
+        image: ghcr.io/akuity/kargo:v0.8.7
+        imagePullPolicy: IfNotPresent
+        command: ["/usr/local/bin/kargo", "management-controller"]
+        envFrom:
+        - configMapRef:
+            name: kargo-management-controller
+        resources:
+          {}
+---
+# Source: kargo/templates/webhooks-server/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kargo-webhooks-server
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: webhooks-server
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kargo
+      app.kubernetes.io/instance: kargo
+      app.kubernetes.io/component: webhooks-server
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: kargo-0.8.7
+        app.kubernetes.io/name: kargo
+        app.kubernetes.io/instance: kargo
+        app.kubernetes.io/version: "v0.8.7"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: webhooks-server
+      annotations:
+        configmap/checksum: f5a272a41ab010875655733b999fc39948206d2ee45448f13813e7862ef0c669
+    spec:
+      serviceAccount: kargo-webhooks-server
+      containers:
+      - name: webhooks-server
+        image: ghcr.io/akuity/kargo:v0.8.7
+        imagePullPolicy: IfNotPresent
+        command: ["/usr/local/bin/kargo", "webhooks-server"]
+        envFrom:
+        - configMapRef:
+            name: kargo-webhooks-server
+        ports:
+        - containerPort: 9443
+          name: webhooks-server
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+        resources:
+          {}
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 0644
+          secretName: kargo-webhooks-server-cert

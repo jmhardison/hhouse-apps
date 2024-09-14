@@ -1,0 +1,98 @@
+---
+# Source: kargo/templates/api/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-api
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: api
+---
+# Source: kargo/templates/controller/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-controller
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+---
+# Source: kargo/templates/garbage-collector/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-garbage-collector
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: garbage-collector
+---
+# Source: kargo/templates/management-controller/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-management-controller
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: management-controller
+---
+# Source: kargo/templates/users/service-accounts.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-admin
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+---
+# Source: kargo/templates/users/service-accounts.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-viewer
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+---
+# Source: kargo/templates/webhooks-server/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kargo-webhooks-server
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: webhooks-server

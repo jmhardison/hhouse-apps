@@ -1,0 +1,675 @@
+
+# Source: kargo/templates/api/cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-api
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: api
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - patch
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+  - apiGroups:
+      - kargo.akuity.io
+    resources:
+      - freights
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - watch
+      - delete
+  - apiGroups:
+      - kargo.akuity.io
+    resources:
+      - freights/status
+    verbs:
+      - update
+      - patch
+  - apiGroups:
+      - kargo.akuity.io
+    resources:
+      - projects
+      - stages
+      - warehouses
+    verbs:
+      - "*"
+  - apiGroups:
+      - kargo.akuity.io
+    resources:
+      - promotions
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - patch
+  - apiGroups:
+      - kargo.akuity.io
+    resources:
+      # Needed for OpenShift
+      - stages/finalizers
+    verbs:
+      - patch
+      - update
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - rolebindings
+      - roles
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - analysistemplates
+    verbs:
+      - "*"
+---
+# Source: kargo/templates/api/cluster-role.yaml
+# This role is bound to the API server ServiceAccount and the kargo-admin
+# ServiceAccount in project namespaces as they are created. This dynamically
+# extends the API server's and any (global) admin's most sensitive permissions
+# on a per-namespace basis instead of granting them cluster-wide.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-project-admin
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: api
+rules:
+- apiGroups:
+    - ""
+  resources:
+    - configmaps
+    - secrets
+    - serviceaccounts
+  verbs:
+    - "*"
+- apiGroups:
+    - rbac.authorization.k8s.io
+  resources:
+    - rolebindings
+    - roles
+  verbs:
+    - "*"
+---
+# Source: kargo/templates/api/cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-api-rollouts
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: api
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysisruns
+  verbs:
+  - get
+  - list
+  - watch
+---
+# Source: kargo/templates/controller/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-controller
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - projects
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights
+  - promotions
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - stages
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - promote
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - warehouses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights/status
+  - promotions/status
+  - stages/status
+  - warehouses/finalizers
+  - warehouses/status
+  verbs:
+  - patch
+---
+# Source: kargo/templates/controller/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-controller-argocd
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - applications
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+---
+# Source: kargo/templates/controller/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-controller-rollouts
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysistemplates
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysisruns
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+  - deletecollection
+---
+# Source: kargo/templates/garbage-collector/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-garbage-collector
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: garbage-collector
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+# The garbage collector cannot actually carry our promotions because it lacks
+# permission to create Promotion resources, but having the custom promote verb
+# on Stages allows it to delete Promotion resources associated with any Stage.
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - stages
+  verbs:
+  - promote
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - stages
+  - warehouses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights
+  - promotions
+  verbs:
+  - delete
+  - get
+  - list
+  - watch
+---
+# Source: kargo/templates/management-controller/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-management-controller
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: management-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - serviceaccounts
+  verbs:
+  - "*"
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - "*"
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - projects
+  verbs:
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - projects/status
+  verbs:
+  - patch
+---
+# Source: kargo/templates/users/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-admin
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  # secrets permissions are granted dynamically at the project-level
+  - serviceaccounts # writes on serviceaccounts are granted dynamically at the project-level
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings # writes on rolebindings are granted dynamically at the project-level
+  - roles # writes on roles are granted dynamically at the project-level
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights
+  - projects
+  - stages
+  - warehouses
+  verbs:
+  - "*" # full access to all mutable Kargo resource types
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - stages
+  verbs:
+  - promote # promotion permission for all stages
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - promotions
+  verbs: # nearly full access to all promotions, but they are immutable
+  - create
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights/status
+  verbs:
+  - patch # for manual approvals
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysisruns
+  verbs: # view and delete analysisruns
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysistemplates
+  verbs:
+  - "*" # full access to analysistemplates
+---
+# Source: kargo/templates/users/cluster-roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-viewer
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights
+  - projects
+  - promotions
+  - stages
+  - warehouses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysisruns
+  - analysistemplates
+  verbs:
+  - get
+  - list
+  - watch
+---
+# Source: kargo/templates/webhooks-server/cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-webhooks-server
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: webhooks-server
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+    - ""
+  resources:
+    - events
+  verbs:
+    - create
+    - patch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - serviceaccounts
+  verbs:
+  - "*"
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - "*"
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - freights
+  - projects
+  - stages
+  - warehouses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - project/status
+  verbs:
+  - patch
+  - update
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+# Source: kargo/templates/webhooks-server/cluster-role.yaml
+# This cluster role is custom for the namespace controller. The namespace
+# controller will not actually be able to carry our promotions because it lacks
+# permission to create Promotion resources, but having the custom promote verb
+# on Stages allows it to delete Promotion resources associated with any Stage
+# when a namespace is deleted. Without this, the webhook would prevent that.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-webhooks-server-ns-controller
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: webhooks-server
+rules:
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - stages
+  verbs:
+  - promote
+---
+# Source: kargo/templates/webhooks-server/cluster-role.yaml
+# This cluster role is custom for the generic garbage collector. It will not
+# actually be able to carry our promotions because it lacks permission to create
+# Promotion resources, but having the custom promote verb on Stages allows it to
+# delete Promotion resources associated with any Stage when the Stage is
+# deleted. Without this, the webhook would prevent that and Stage deletions
+# would not cascade to related Promotions.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kargo-webhooks-server-generic-gc
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: webhooks-server
+rules:
+- apiGroups:
+  - kargo.akuity.io
+  resources:
+  - stages
+  verbs:
+  - promote
