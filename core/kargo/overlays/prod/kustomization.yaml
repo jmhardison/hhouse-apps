@@ -5,4 +5,7 @@ namespace: kargo
 resources:
 - ../../base
 - op-secrets/argo-secrets.yaml
+- op-secrets/hhouse-cloudflare-api-token-secret_secrets.yaml
+- certificates/certs.yaml
+- certificates/cloudflare-ca-originissuer.yaml
 

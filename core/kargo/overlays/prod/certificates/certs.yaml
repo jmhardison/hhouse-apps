@@ -1,0 +1,46 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kargo-api
+  namespace: kargo
+  labels:
+    helm.sh/chart: kargo-0.8.7
+    app.kubernetes.io/name: kargo
+    app.kubernetes.io/instance: kargo
+    app.kubernetes.io/version: "v0.8.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: api
+spec:
+  issuerRef:
+    group: cert-manager.k8s.cloudflare.com
+    kind: OriginIssuer
+    name: cloudflareorigin-issuer
+  secretName: kargo-api-cert
+  commonName: kargo.hhouse.us
+  dnsNames:
+  - kargo.hhouse.us
+  # Duration of the certificate.
+  duration: 168h0m0s
+  # Renew a day before the certificate expiration.
+  renewBefore: 24h0m0s
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kargo-webhooks-server
+  namespace: kargo
+spec:
+  issuerRef:
+    group: cert-manager.k8s.cloudflare.com
+    kind: OriginIssuer
+    name: cloudflareorigin-issuer
+  secretName: kargo-webhooks-server-cert
+  commonName: kargo-webhook.hhouse.us
+  dnsNames:
+  - kargo-webhook.hhouse.us
+  # Duration of the certificate.
+  duration: 168h0m0s
+  # Renew a day before the certificate expiration.
+  renewBefore: 24h0m0s
+
