@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: couchdb-tls
+  namespace: couchdb
+spec:
+  issuerRef:
+    name: lets-encrypt
+    kind: ClusterIssuer
+    group: cert-manager.io
+  secretName: couchdb-tls-cert
+  commonName: couchdb1.hhouse.us
+  dnsNames:
+  - couchdb1.hhouse.us
