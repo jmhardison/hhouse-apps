@@ -4,6 +4,17 @@ kind: IPAddressPool
 metadata:
   name: custom-addresspool
   namespace: metallb-system
-spec: 
+spec:
   addresses:
   - 192.168.5.211-192.168.5.220
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: custom-addresspool-l2
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - custom-addresspool
+  interfaces:
+  - eth0

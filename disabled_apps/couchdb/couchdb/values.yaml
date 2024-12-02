@@ -184,7 +184,7 @@ ingress:
     # Secrets must be manually created in the namespace.
     - secretName: couchdb-tls-cert
       hosts:
-        - couchdb1.hhouse.u
+        - couchdb1.hhouse.us
 
 ## Optional resource requests and limits for the CouchDB container
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
