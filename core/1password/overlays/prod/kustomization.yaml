@@ -9,6 +9,6 @@ helmCharts:
 - name: connect
   includeCRDs: true
   releaseName: connect
-  version: 1.15.1
+  version: 1.16.0
   valuesFile: customvalues.yaml
   repo: https://1password.github.io/connect-helm-charts
