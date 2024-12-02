@@ -14,7 +14,7 @@ kubectl create namespace 1password
 op inject -i op-session.tpl -o op-session
 kubectl -n 1password create secret generic op-credentials --from-file=1password-credentials.json=op-session
 
-kubectl -n 1password create secret generic onepassword-token --from-literal=token=$(op item get hhk8s-1password --fields token)
+kubectl -n 1password create secret generic onepassword-token --from-literal=token=$(op item get hhk8s-1password --reveal --fields token)
 ```
 
 
